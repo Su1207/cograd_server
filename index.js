@@ -10,17 +10,19 @@ import jwt from 'jsonwebtoken';
 const app = express();
 import bcrypt from 'bcryptjs';
 const bcryptSalt = bcrypt.genSaltSync(10);
-const jwtSecret ="fasefraw4r5r3wq45wdfgw34twdfg"
+const jwtSecret = "fasefraw4r5r3wq45wdfgw34twdfg"
+import stripePackage from "stripe";
+const stripe = stripePackage("sk_test_51OpRD5SBlYGeUqKiPs5tziDlHveysWuMEcArXkyksCQmXseJfgrIuXFCudnOPeXWXkc8ZfhxdGOL3upYdLtCHXKx00qHmFmC7h");
 
 app.use(
-    cors({
-        credentials: true,
-        origin: 'http://localhost:5173',
-    })
+  cors({
+    credentials: true,
+    origin: 'http://localhost:5173',
+  })
 );
 
 app.get('/test', (req, res) => {
-    res.json('test ok');
+  res.json('test ok');
 });
 
 app.use(express.json());
@@ -28,21 +30,21 @@ app.use(cookieParser());
 // mongoose.connect(process.env.MONGO_URL);r84CHkvJYv5llJSr
 mongoose.connect("mongodb+srv://varun802vu:r84CHkvJYv5llJSr@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 app.post('/signup', async (req, res) => {
-    const { userName, email, password } = req.body;
-     try {
-      const userDoc = await User.create({
-        userName,
-        email,
-        password: bcrypt.hashSync(password, bcryptSalt),
-      });
-      res.json({ success: true, message: 'User registered successfully', user: userDoc });
-    } catch (e) {
+  const { userName, email, password } = req.body;
+  try {
+    const userDoc = await User.create({
+      userName,
+      email,
+      password: bcrypt.hashSync(password, bcryptSalt),
+    });
+    res.json({ success: true, message: 'User registered successfully', user: userDoc });
+  } catch (e) {
 
-      console.error(e); // Log the error to the console
-      res.status(422).json({ error: e.message }); // Return a meaningful error message in the response
+    console.error(e); // Log the error to the console
+    res.status(422).json({ error: e.message }); // Return a meaningful error message in the response
 
-    }
-  
+  }
+
 });
 
 app.post('/login', async (req, res) => {
@@ -70,7 +72,45 @@ app.post('/login', async (req, res) => {
     // redirectTofront(); // Redirect to a dedicated "login failed" page
   }
 });
+app.post("/api/create-checkout-session", async (req, res) => {
+  const { products } = req.body;
+  console.log(products)
+
+  // const lineItems = products.map((product)=>({
+  //     price_data:{
+  //         currency:"inr",
+  //         product_data:{
+  //             name:product.dish,
+  //             images:[product.imgdata]
+  //         },
+  //         unit_amount:product.price * 100,
+  //     },
+  //     quantity:product.qnty
+  // }));
+  const lineItems = products.map((product) => ({
+    price_data: {
+      currency: "inr", // Change the currency as required
+      product_data: {
+        name: product.name,
+      },
+      unit_amount: product.price * 100, // Convert price to paise (1 rupee = 100 paise)
+    },
+    quantity: product.quantity,
+  }));
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: lineItems,
+    mode: "payment",
+    success_url: "http://localhost:5173/sucess",
+    cancel_url: "http://localhost:5173/cancel",
+  });
+
+  res.json({ id: session.id })
+
+})
+
 const PORT = 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
