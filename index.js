@@ -30,12 +30,16 @@ app.use(cookieParser());
 // mongoose.connect(process.env.MONGO_URL);r84CHkvJYv5llJSr
 mongoose.connect("mongodb+srv://varun802vu:r84CHkvJYv5llJSr@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 app.post('/signup', async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password,phoneNumber,gender,dob } = req.body;
   try {
     const userDoc = await User.create({
       userName,
       email,
       password: bcrypt.hashSync(password, bcryptSalt),
+      phoneNumber,
+      gender,
+      
+      dob
     });
     res.json({ success: true, message: 'User registered successfully', user: userDoc });
   } catch (e) {
@@ -59,19 +63,17 @@ app.post('/login', async (req, res) => {
         id: userDoc._id,
       }, jwtSecret, {}, (err, token) => {
         if (err) throw err;
-        res.cookie('token', token).json(userDoc);
+        res.cookie('token', token).json({ userId: userDoc._id }); // Return the user ID
         console.log(token)
       });
     } else {
       res.status(422).json('Incorrect password');
     }
   } else {
-    // Handle user not found scenario
-    res.status(401).json({ message: 'User not found. Please try again.' }); // Send an error message
-    // OR
-    // redirectTofront(); // Redirect to a dedicated "login failed" page
+    res.status(401).json({ message: 'User not found. Please try again.' });
   }
 });
+
 app.post("/api/create-checkout-session", async (req, res) => {
   const { products } = req.body;
   console.log(products)
