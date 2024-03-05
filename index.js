@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import User from './models/User.js';
+import Address from './models/Address.js'
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -30,25 +31,23 @@ app.use(cookieParser());
 // mongoose.connect(process.env.MONGO_URL);r84CHkvJYv5llJSr
 mongoose.connect("mongodb+srv://varun802vu:r84CHkvJYv5llJSr@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 app.post('/signup', async (req, res) => {
-  const { userName, email, password,phoneNumber,gender,dob } = req.body;
+  const { userName, email, password, phoneNumber, gender, dob, addressData } = req.body; // Extract addressData from request body
   try {
+    const addressDoc = await Address.create(addressData); // Create address document
     const userDoc = await User.create({
       userName,
       email,
       password: bcrypt.hashSync(password, bcryptSalt),
       phoneNumber,
       gender,
-      
-      dob
+      dob,
+      address: addressDoc._id // Assign address document id to user
     });
     res.json({ success: true, message: 'User registered successfully', user: userDoc });
   } catch (e) {
-
-    console.error(e); // Log the error to the console
-    res.status(422).json({ error: e.message }); // Return a meaningful error message in the response
-
+    console.error(e);
+    res.status(422).json({ error: e.message });
   }
-
 });
 
 app.post('/login', async (req, res) => {
