@@ -4,7 +4,7 @@ const {
   fetchAllProducts,
   fetchProductById,
   updateProduct,
-} = require("../controllers/Product");
+} = require("../Controllers/Product");
 const router = express.Router();
 
 router

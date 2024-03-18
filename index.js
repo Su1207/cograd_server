@@ -5,6 +5,10 @@ config();
 // const Address = require('./models/Address.js');
 const express = require("express");
 const cors = require("cors");
+const productsRouter = require("./routes/Products");
+const categoriesRouter = require("./routes/Categories");
+const cartRouter = require("./routes/Cart");
+const orderRouter = require("./routes/Order");
 
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/AuthRoutes");
@@ -49,9 +53,7 @@ app.use("/order", orderRouter.router);
 // mongoose.connect(process.env.MONGO_URL);r84CHkvJYv5llJSr
 async function connectDB() {
   await mongoose
-    .connect(
-      "mongodb+srv://varun802vu:r84CHkvJYv5llJSr@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-    )
+    .connect("mongodb://localhost:27017/cograd")
     .then((c) => console.log(`Connected to ${c.connection.host}`))
     .catch((err) => console.log(err));
 }
