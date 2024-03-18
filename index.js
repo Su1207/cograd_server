@@ -37,7 +37,6 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use("/", authRoutes);
 
 app.use(
   cors({
@@ -45,6 +44,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use("/", authRoutes);
 app.use("/products", productsRouter.router);
 app.use("/categories", categoriesRouter.router);
 app.use("/cart", cartRouter.router);
@@ -53,7 +53,9 @@ app.use("/order", orderRouter.router);
 // mongoose.connect(process.env.MONGO_URL);r84CHkvJYv5llJSr
 async function connectDB() {
   await mongoose
-    .connect("mongodb://localhost:27017/cograd")
+    .connect(
+      "mongodb+srv://varun802vu:r84CHkvJYv5llJSr@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    )
     .then((c) => console.log(`Connected to ${c.connection.host}`))
     .catch((err) => console.log(err));
 }
