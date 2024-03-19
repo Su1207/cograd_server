@@ -42,10 +42,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is Required"],
   },
+  role: { type: String, required: true, default: "user" },
   userName: { type: String, required: [true, "Username is Required"] },
   phoneNumber: { type: String, required: [true, "Phone Number is Required"] },
   gender: String,
-  dob: { type: Date, required: [true, "Date of Birth is Required"] },
+  // dob: { type: Date, required: [true, "Date of Birth is Required"] },
 });
 
 userSchema.pre("save", async function (next) {
