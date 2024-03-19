@@ -33,16 +33,12 @@ app.use(
   cors({
     credentials: true,
     origin: "http://localhost:5173",
+    exposedHeaders: ["X-Total-Count"],
   })
 );
 
 app.use(cookieParser());
 
-app.use(
-  cors({
-    exposedHeaders: ["X-Total-Count"],
-  })
-);
 app.use(express.json());
 app.use("/", authRoutes);
 app.use("/products", productsRouter.router);
@@ -96,6 +92,3 @@ app.post("/api/create-checkout-session", async (req, res) => {
 
   res.json({ id: session.id });
 });
-
-
-

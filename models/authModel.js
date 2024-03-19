@@ -32,22 +32,27 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: [true, "Email is Required"],
-    unique: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: [true, "Email is Required"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is Required"],
+    },
+    role: { type: String, required: true, default: "user" },
+    userName: { type: String, required: [true, "Username is Required"] },
+    phoneNumber: { type: String, required: [true, "Phone Number is Required"] },
+    gender: String,
+    // dob: { type: Date, required: [true, "Date of Birth is Required"] },
   },
-  password: {
-    type: String,
-    required: [true, "Password is Required"],
-  },
-  role: { type: String, required: true, default: "user" },
-  userName: { type: String, required: [true, "Username is Required"] },
-  phoneNumber: { type: String, required: [true, "Phone Number is Required"] },
-  gender: String,
-  // dob: { type: Date, required: [true, "Date of Birth is Required"] },
-});
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();

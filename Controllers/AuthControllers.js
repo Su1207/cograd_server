@@ -9,7 +9,13 @@ const createToken = (id) => {
 };
 
 const handleErrors = (err) => {
-  let errors = { email: "", password: "", userName: "", phoneNumber: "", gender: "", dob: "" };
+  let errors = {
+    email: "",
+    password: "",
+    userName: "",
+    phoneNumber: "",
+    gender: "",
+  };
 
   if (err.message === "incorrect email") {
     errors.email = "That email is not registered";
@@ -39,14 +45,20 @@ const handleErrors = (err) => {
 
 module.exports.register = async (req, res, next) => {
   try {
-    const { email, password, userName, phoneNumber, gender, dob } = req.body;
+    const { email, password, userName, phoneNumber, gender } = req.body;
 
     // Check if all required fields are provided
-    if (!email || !password || !userName || !phoneNumber || !gender || !dob) {
+    if (!email || !password || !userName || !phoneNumber || !gender) {
       throw Error("Please fill all the details");
     }
 
-    const user = await User.create({ email, password, userName, phoneNumber, gender, dob });
+    const user = await User.create({
+      email,
+      password,
+      userName,
+      phoneNumber,
+      gender,
+    });
     const token = createToken(user._id);
 
     res.cookie("jwt", token, {
@@ -68,7 +80,12 @@ module.exports.login = async (req, res) => {
     const user = await User.login(email, password);
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
-    res.status(200).json({ user: { userId: user._id, email: user.email, name: user.userName }, status: true }); // Sending userId, email, and name
+    res
+      .status(200)
+      .json({
+        user: { userId: user._id, email: user.email, name: user.userName },
+        status: true,
+      }); // Sending userId, email, and name
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, status: false });
@@ -80,7 +97,17 @@ module.exports.address = async (req, res) => {
     const { userId } = req.user; // Assuming you have middleware to extract user ID from JWT
 
     // Get address data from request body
-    const { name, email, contact, contactCountry, billingAddress, landmark, pincode, district, state } = req.body;
+    const {
+      name,
+      email,
+      contact,
+      contactCountry,
+      billingAddress,
+      landmark,
+      pincode,
+      district,
+      state,
+    } = req.body;
 
     // Create or update user's address
     await User.findByIdAndUpdate(userId, {
@@ -93,8 +120,8 @@ module.exports.address = async (req, res) => {
         landmark,
         pincode,
         district,
-        state
-      }
+        state,
+      },
     });
 
     // Respond with success message
