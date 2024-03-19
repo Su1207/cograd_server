@@ -54,7 +54,7 @@ app.use("/order", orderRouter.router);
 async function connectDB() {
   await mongoose
     .connect(
-      "mongodb+srv://varun802vu:r84CHkvJYv5llJSr@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+      "mongodb+srv://varun802vu:lxzfDPmKJStIFheD@cluster0.cwmx4vh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     )
     .then((c) => console.log(`Connected to ${c.connection.host}`))
     .catch((err) => console.log(err));
@@ -96,3 +96,6 @@ app.post("/api/create-checkout-session", async (req, res) => {
 
   res.json({ id: session.id });
 });
+
+
+

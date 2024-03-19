@@ -9,9 +9,8 @@ const createToken = (id) => {
 };
 
 const handleErrors = (err) => {
-  let errors = { email: "", password: "" };
+  let errors = { email: "", password: "", userName: "", phoneNumber: "", gender: "", dob: "" };
 
-  console.log(err);
   if (err.message === "incorrect email") {
     errors.email = "That email is not registered";
   }
@@ -31,12 +30,22 @@ const handleErrors = (err) => {
     });
   }
 
+  if (err.message === "Please fill all the details") {
+    errors.email = "Please fill all the details";
+  }
+
   return errors;
 };
 
 module.exports.register = async (req, res, next) => {
   try {
     const { email, password, userName, phoneNumber, gender, dob } = req.body;
+
+    // Check if all required fields are provided
+    if (!email || !password || !userName || !phoneNumber || !gender || !dob) {
+      throw Error("Please fill all the details");
+    }
+
     const user = await User.create({ email, password, userName, phoneNumber, gender, dob });
     const token = createToken(user._id);
 
@@ -48,7 +57,6 @@ module.exports.register = async (req, res, next) => {
 
     res.status(201).json({ user: user._id, created: true });
   } catch (err) {
-    console.log(err);
     const errors = handleErrors(err);
     res.json({ errors, created: false });
   }
@@ -64,5 +72,36 @@ module.exports.login = async (req, res) => {
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, status: false });
+  }
+};
+
+module.exports.address = async (req, res) => {
+  try {
+    const { userId } = req.user; // Assuming you have middleware to extract user ID from JWT
+
+    // Get address data from request body
+    const { name, email, contact, contactCountry, billingAddress, landmark, pincode, district, state } = req.body;
+
+    // Create or update user's address
+    await User.findByIdAndUpdate(userId, {
+      address: {
+        name,
+        email,
+        contact,
+        contactCountry,
+        billingAddress,
+        landmark,
+        pincode,
+        district,
+        state
+      }
+    });
+
+    // Respond with success message
+    res.status(200).json({ message: "Address saved successfully" });
+  } catch (err) {
+    // Handle errors...
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
