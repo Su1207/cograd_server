@@ -29,10 +29,16 @@ const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://cograd-puce.vercel.app",
+];
+
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     exposedHeaders: ["X-Total-Count"],
   })
 );
