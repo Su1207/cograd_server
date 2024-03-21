@@ -2,8 +2,8 @@ const User = require("../models/authModel");
 const jwt = require("jsonwebtoken");
 
 const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, "varunUpadhyaySuperSecretKEy", {
+const createToken = (userName, userId) => {
+  return jwt.sign({ userName, userId }, "varunUpadhyaySuperSecretKEy", {
     expiresIn: maxAge,
   });
 };
@@ -67,7 +67,12 @@ module.exports.register = async (req, res, next) => {
       maxAge: maxAge * 1000,
     });
 
-    res.status(201).json({ user: user._id, created: true });
+    res.status(201).json({
+      user: user._id,
+      email: user.email,
+      name: user.userName,
+      created: true,
+    });
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, created: false });
@@ -78,14 +83,12 @@ module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.login(email, password);
-    const token = createToken(user._id);
+    const token = createToken(user.userName, user._id);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
-    res
-      .status(200)
-      .json({
-        user: { userId: user._id, email: user.email, name: user.userName },
-        status: true,
-      }); // Sending userId, email, and name
+    res.status(200).json({
+      user: { userId: user._id, email: user.email },
+      status: true,
+    }); // Sending userId, email, and name
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, status: false });

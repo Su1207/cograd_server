@@ -2,6 +2,9 @@ const { Product } = require("../models/Product");
 
 exports.createProduct = async (req, res) => {
   const product = new Product(req.body);
+  product.discountPrice = Math.round(
+    product.price * (1 - product.discountPercentage / 100)
+  );
   try {
     const response = await product.save();
     res.status(201).json(response);
@@ -65,7 +68,11 @@ exports.updateProduct = async (req, res) => {
     const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.status(201).json(product);
+    product.discountPrice = Math.round(
+      product.price * (1 - product.discountPercentage / 100)
+    );
+    const updatedProduct = await product.save();
+    res.status(200).json(updatedProduct);
   } catch (err) {
     res.status(400).json(err);
   }
