@@ -63,8 +63,8 @@ async function connectDB() {
 }
 
 app.post("/api/create-checkout-session", async (req, res) => {
-  const { products } = req.body;
-  console.log(products);
+  const { items } = req.body;
+  console.log(items);
 
   // const lineItems = products.map((product)=>({
   //     price_data:{
@@ -77,24 +77,29 @@ app.post("/api/create-checkout-session", async (req, res) => {
   //     },
   //     quantity:product.qnty
   // }));
-  const lineItems = products.map((product) => ({
+  const lineItems = items.map((item) => ({
     price_data: {
       currency: "inr", // Change the currency as required
       product_data: {
-        name: product.name,
+        name: item.product.title,
       },
-      unit_amount: product.price * 100, // Convert price to paise (1 rupee = 100 paise)
+      unit_amount: item.product.discountPrice * 100, // Convert price to paise (1 rupee = 100 paise)
     },
-    quantity: product.quantity,
+    quantity: item.quantity,
   }));
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: lineItems,
-    mode: "payment",
-    success_url: "http://localhost:5173/sucess",
-    cancel_url: "http://localhost:5173/cancel",
-  });
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "http://localhost:5173/success",
+      cancel_url: "http://localhost:5173/cancel",
+    });
 
-  res.json({ id: session.id });
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).json({ error: "Error creating checkout session" });
+  }
 });
