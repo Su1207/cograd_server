@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const AddressSchema = new mongoose.Schema({
-  userId: { type: String },
+  userId: { type: String, required: true },
   name: { type: String },
   email: { type: String },
   contact: { type: String },

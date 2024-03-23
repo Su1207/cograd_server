@@ -3,28 +3,27 @@ const Address = require("../models/addressModel"); // Assuming you have an addre
 module.exports.storeAddress = async (req, res, next) => {
   try {
     // Extract address data from request body
-    const { userId, name, email, contact, contactCountry, billingAddress, landmark, pincode, district, state } = 
-    req.body;
+    const address = new Address(req.body);
 
     // Create a new address instance
-    const newAddress = new Address({
-      userId,
-      name,
-      email,
-      contact,
-      contactCountry,
-      billingAddress,
-      landmark,
-      pincode,
-      district,
-      state,
-    });
+    // const newAddress = new Address({
+    //   userId,
+    //   name,
+    //   email,
+    //   contact,
+    //   contactCountry,
+    //   billingAddress,
+    //   landmark,
+    //   pincode,
+    //   district,
+    //   state,
+    // });
 
     // Save the address to the database
-    await newAddress.save();
+    const response = await address.save();
 
     // Send response
-    res.status(201).json({ message: "Address stored successfully" });
+    res.status(201).json(response);
   } catch (error) {
     // Handle errors
     console.error("Error storing address:", error);
