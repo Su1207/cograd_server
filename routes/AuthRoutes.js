@@ -9,7 +9,7 @@ router.post("/cards", checkUser);
 router.post("/signup", register);
 router.post("/login", login);
 router.post("/address", storeAddress); // New endpoint for storing address
-router.get("/getaddress", findAddressesByUserId)
+router.get("/getaddress/:userId", findAddressesByUserId)
 
 
 
