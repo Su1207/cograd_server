@@ -3,7 +3,8 @@ const Address = require("../models/addressModel"); // Assuming you have an addre
 module.exports.storeAddress = async (req, res, next) => {
   try {
     // Extract address data from request body
-    const { userId, name, email, contact, contactCountry, billingAddress, landmark, pincode, district, state } = req.body;
+    const { userId, name, email, contact, contactCountry, billingAddress, landmark, pincode, district, state } = 
+    req.body;
 
     // Create a new address instance
     const newAddress = new Address({
