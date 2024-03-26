@@ -1,4 +1,4 @@
-const { register, login, address } = require("../controllers/AuthControllers");
+const { register, login, address } = require("../Controllers/AuthControllers");
 const { checkUser } = require("../middlewares/AuthMiddleware.js");
 const {
   storeAddress,
