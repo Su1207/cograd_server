@@ -1,9 +1,9 @@
 const { register, login, address } = require("../Controllers/AuthControllers");
-const { checkUser } = require("../middlewares/AuthMiddleware.js");
+const { checkUser } = require("../middlewares/authMiddleware.js");
 const {
   storeAddress,
   findAddressesByUserId,
-} = require("../controllers/AddressController.js");
+} = require("../Controllers/addressController.js");
 
 const router = require("express").Router();
 //secret page, checkuser
