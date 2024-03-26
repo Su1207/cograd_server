@@ -1,4 +1,4 @@
-const Address = require("../models/addressModel"); // Assuming you have an address model
+const { Address } = require("../models/addressModel"); // Assuming you have an address model
 
 module.exports.storeAddress = async (req, res, next) => {
   try {
