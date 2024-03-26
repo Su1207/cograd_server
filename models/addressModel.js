@@ -16,4 +16,4 @@ const AddressSchema = new mongoose.Schema({
   state: { type: String },
 });
 
-module.exports = mongoose.model("Address", AddressSchema);
+exports.Address = mongoose.model("Address", AddressSchema);
