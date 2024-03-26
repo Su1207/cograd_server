@@ -1,5 +1,5 @@
-const User = require("../models/AuthModel");
 const jwt = require("jsonwebtoken");
+const { Users } = require("../models/AuthModel");
 
 module.exports.checkUser = (req, res, next) => {
   const token = req.cookies.jwt;
@@ -12,7 +12,7 @@ module.exports.checkUser = (req, res, next) => {
           res.json({ status: false });
           next();
         } else {
-          const user = await User.findById(decodedToken.id);
+          const user = await Users.findById(decodedToken.id);
           if (user) res.json({ status: true, user: user.email });
           else res.json({ status: false });
           next();

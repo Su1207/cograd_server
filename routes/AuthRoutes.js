@@ -1,5 +1,5 @@
-const { register, login, address } = require("../Controllers/AuthControllers");
 const { checkUser } = require("../middlewares/authMiddleware.js");
+const { login, register } = require("../Controllers/AuthControllers.js");
 const {
   storeAddress,
   findAddressesByUserId,
