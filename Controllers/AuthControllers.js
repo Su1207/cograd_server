@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { Users } = require("../models/AuthModel");
+const { Users } = require("../models/Auth");
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (userName, userId, role) => {
