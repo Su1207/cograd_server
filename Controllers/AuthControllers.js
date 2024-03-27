@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { Users } = require("../models/Auth");
+const User = require("../models/Auth");
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (userName, userId, role) => {
@@ -43,7 +43,7 @@ const handleErrors = (err) => {
   return errors;
 };
 
-exports.register = async (req, res, next) => {
+module.exports.register = async (req, res, next) => {
   try {
     const { email, password, userName, phoneNumber, gender } = req.body;
 
@@ -52,7 +52,7 @@ exports.register = async (req, res, next) => {
       throw Error("Please fill all the details");
     }
 
-    const user = await Users.create({
+    const user = await User.create({
       email,
       password,
       userName,
@@ -79,10 +79,10 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res) => {
+module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await Users.login(email, password);
+    const user = await User.login(email, password);
     const token = createToken(user.userName, user._id, user.role);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
     res.status(200).json({
@@ -95,7 +95,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.address = async (req, res) => {
+module.exports.address = async (req, res) => {
   try {
     const { userId } = req.user; // Assuming you have middleware to extract user ID from JWT
 
@@ -113,7 +113,7 @@ exports.address = async (req, res) => {
     } = req.body;
 
     // Create or update user's address
-    await Users.findByIdAndUpdate(userId, {
+    await User.findByIdAndUpdate(userId, {
       address: {
         name,
         email,
