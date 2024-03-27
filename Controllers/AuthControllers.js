@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
 const User = require("../models/Auth");
+const jwt = require("jsonwebtoken");
 
 const maxAge = 3 * 24 * 60 * 60;
-const createToken = (name, userId, role) => {
-  return jwt.sign({ name, userId, role }, "varunUpadhyaySuperSecretKEy", {
+const createToken = (userName, userId, role) => {
+  return jwt.sign({ userName, userId, role }, "varunUpadhyaySuperSecretKEy", {
     expiresIn: maxAge,
   });
 };
@@ -65,12 +65,11 @@ module.exports.register = async (req, res, next) => {
       withCredentials: true,
       httpOnly: true,
       maxAge: maxAge * 1000,
-      sameSite: "None", // Set SameSite to None
     });
 
     res.status(201).json({
       user: user._id,
-      role: user.role,
+      email: user.email,
       name: user.userName,
       created: true,
     });
@@ -85,13 +84,9 @@ module.exports.login = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user.userName, user._id, user.role);
-    res.cookie("jwt", token, {
-      httpOnly: false,
-      maxAge: maxAge * 1000,
-      sameSite: "None",
-    });
+    res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
     res.status(200).json({
-      user: { userId: user._id, name: user.userName, role: user.role },
+      user: { userId: user._id, email: user.email, role: user.role },
       status: true,
     }); // Sending userId, email, and name
   } catch (err) {
