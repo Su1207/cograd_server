@@ -66,7 +66,6 @@ module.exports.register = async (req, res, next) => {
       httpOnly: true,
       maxAge: maxAge * 1000,
       sameSite: "None", // Set SameSite to None
-      secure: true, // Set secure flag when using SameSite=None
     });
 
     res.status(201).json({
@@ -90,7 +89,6 @@ module.exports.login = async (req, res) => {
       httpOnly: false,
       maxAge: maxAge * 1000,
       sameSite: "None",
-      secure: true,
     });
     res.status(200).json({
       user: { userId: user._id, name: user.userName, role: user.role },
