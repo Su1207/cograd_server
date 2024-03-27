@@ -65,6 +65,8 @@ module.exports.register = async (req, res, next) => {
       withCredentials: true,
       httpOnly: true,
       maxAge: maxAge * 1000,
+      sameSite: "None", // Set SameSite to None
+      secure: true, // Set secure flag when using SameSite=None
     });
 
     res.status(201).json({
@@ -84,7 +86,12 @@ module.exports.login = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user.userName, user._id, user.role);
-    res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
+    res.cookie("jwt", token, {
+      httpOnly: false,
+      maxAge: maxAge * 1000,
+      sameSite: "None",
+      secure: true,
+    });
     res.status(200).json({
       user: { userId: user._id, name: user.userName, role: user.role },
       status: true,
